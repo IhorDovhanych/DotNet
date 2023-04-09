@@ -3,6 +3,7 @@
     public class Paint
     {
         public int Id { get; set; }
+        public string Code { get; set; }
         public string ArtistSecondName { get; set; }
         public string PaintName { get; set; }
         public int Price { get; set; }

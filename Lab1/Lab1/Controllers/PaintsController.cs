@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+using Lab1.Services;
 
 namespace Lab1.Controllers
 {
@@ -17,16 +19,28 @@ namespace Lab1.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Paint>>> Get()
         {
-        return Ok(await this._context.Gallery.ToListAsync());
+            return Ok(await this._context.Gallery.ToListAsync());
         }
 
         [HttpPost]
         public async Task<ActionResult<List<Paint>>> AddNewPaint(Paint paint)
         {
-            this._context.Gallery.Add(paint);
-            await this._context.SaveChangesAsync();
 
-            return Ok(await this._context.Gallery.ToListAsync());
+            //List<Paint> values = await this._context.Gallery.ToListAsync();
+            //Console.WriteLine(values[0].Id);
+            if (
+                PaintsService.ValidateCode(paint.Code) ||
+                PaintsService.ValidateSecondName(paint.ArtistSecondName) ||
+                PaintsService.ValidatePaintName(paint.PaintName) ||
+                PaintsService.ValidatePrice(paint.Price) ||
+                PaintsService.ValidatePaintType(paint.PaintType)
+                ) { 
+                this._context.Gallery.Add(paint);
+                await this._context.SaveChangesAsync();
+
+                return Ok(await this._context.Gallery.ToListAsync());
+            }
+            throw new Exception("Post method error");
         }
 
         [HttpPut]
